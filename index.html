@@ -1,0 +1,1825 @@
+﻿<!DOCTYPE html>
+<html lang="en" id="main-html">
+<head>
+    <link rel="icon" type="image/png" href="elements/favicon.png">
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#111619" id="theme-color-meta">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="google" content="notranslate" />
+    <meta name="description" content="Official archive of Twisted Duality™ & Twisted Duality Reimagined™ — Where worlds are Unmade and Reimagined." />
+    <meta property="og:title" content="Twisted Duality™ | Official Archive" />
+    <meta property="og:description" content="Official archive of Twisted Duality™ & Twisted Duality Reimagined™ — Where worlds are Unmade and Reimagined." />
+
+    <title>Twisted Duality™ | Archive</title>
+    <style>
+        @font-face {
+            font-family: 'WDXL Lubrifont JP N';
+            src: url('fonts/WDXLLubrifontJPNVNM-Regular.woff2') format('woff2'),
+                 url('fonts/WDXLLubrifontJPN-Regular.woff2') format('woff2'),
+                 url('fonts/WDXLLubrifontJPNVNM-Regular.ttf') format('truetype'),
+                 url('fonts/WDXLLubrifontJPN-Regular.ttf') format('truetype');
+            font-weight: normal;
+            font-style: normal;
+            font-display: swap;
+        }
+    </style>
+    <style>
+        /* --- GLOBAL VARIABLES & RESET --- */
+        :root {
+            --bg-color: #111619;
+            --text-color: #ffffff;
+            --glitch-color: #b3a272;
+            --highlight-color: #ffffff;
+            --tooltip-bg: rgba(10, 10, 10, 0.98);
+        }
+
+        html {
+            background-color: #111619;
+            transition: background-color 0.5s ease;
+        }
+        /* !!! CRITICAL: body MUST stay transparent so grid-bg shows through !!! */
+        /* Safari chrome detection happens on html. Content area must never have solid bg. */
+        body, html {
+            margin: 0; padding: 0;
+            background-color: transparent;
+            color: var(--text-color);
+            font-family: 'WDXL Lubrifont JP N', sans-serif;
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: flex-start;
+            overflow-x: hidden;
+            overscroll-behavior-y: contain; /* Helps with pull-to-refresh feel */
+        }
+
+        /* --- THE GRID ANCHOR --- */
+        .grid-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: var(--bg-color, #fff) no-repeat center center;
+            background-size: auto 100%;
+            z-index: -1;
+            transition: opacity 0.5s ease;
+            transform: translateZ(0);
+            -webkit-transform: translateZ(0);
+        }
+        #matrix-canvas {
+            position: fixed;
+            display: none;
+            pointer-events: none;
+            z-index: -2;
+        }
+
+        /* --- MATRIX VIDEO (behind hole PNGs) --- */
+
+        /* --- UI ELEMENTS & LAYOUT --- */
+        .main-terminal { width: 100%; max-width: 400px; text-align: center; padding: 5px 20px 40px 20px; }
+        .main-logo { width: 100%; max-width: 210px; margin: 0 auto 10px auto; display: block; }
+        @media (max-width: 768px) { .main-logo { max-width: 280px; } }
+        /* --- DESKTOP SUBHEADER CARDS --- */
+        .subtext-header { width: 190px; box-sizing: border-box; margin: 15px auto 5px auto; display: block; padding: 12px 24px; background: rgba(255, 255, 255, 0.12); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 4px; }
+        /* --- MOBILE SUBHEADER CARDS --- */
+        @media (max-width: 768px) { .subtext-header { width: 250px; } }
+        .sector { margin-top: 0; margin-bottom: 30px; }
+
+        /* --- TICKER / RUNNING LINE --- */
+        :root { --intro-width: 180px; }
+        @media (max-width: 768px) { :root { --intro-width: 300px; } }
+        .intro-wrap {
+            width: 100%;
+            max-width: var(--intro-width);
+            overflow: hidden;
+            margin: 6px auto 14px auto;
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+            padding: 2px 0;
+        }
+        .intro-track {
+            display: inline-block;
+            white-space: nowrap;
+            animation: intro-scroll 72s linear infinite;
+            font-size: 0.62rem;
+            letter-spacing: 2.5px;
+            opacity: 0.85;
+        }
+        .intro-key { color: var(--glitch-color); }
+        @keyframes intro-scroll {
+            from { transform: translateX(var(--intro-width)); }
+            to   { transform: translateX(-100%); }
+        }
+
+        /* 2. VERTICAL GLASS LANG SWITCH */
+        .lang-switch {
+            position: fixed; 
+            top: 25px; 
+            right: 10px; /* Hugs the right edge */
+            font-size: 0.65rem; /* Smaller font */
+            letter-spacing: 1px; 
+            z-index: 100;
+            display: flex; 
+            flex-direction: column; /* Vertical stack */
+            gap: 12px; 
+            text-align: right;
+    
+            /* LIQUID GLASS EFFECT */
+            background: rgba(255, 255, 255, 0.1); 
+            backdrop-filter: blur(15px); 
+            -webkit-backdrop-filter: blur(15px); 
+            border: 1px solid rgba(255, 255, 255, 0.1);
+    
+            padding: 12px 15px; 
+            border-radius: 4px;
+        }
+
+        .lang-btn { cursor: pointer; opacity: 0.4; transition: opacity 0.3s; color: var(--text-color); position: relative; }
+        .lang-btn.active { opacity: 1; font-weight: bold; border-bottom: 1px solid var(--text-color); }
+        .lang-btn[data-glitch]:hover { color: transparent; }
+        .lang-btn[data-glitch]:hover::after { content: attr(data-glitch); position: absolute; left: 0; width: 100%; text-align: right; color: var(--glitch-color); animation: stationary-flicker 0.3s steps(2) infinite; font-family: 'WDXL Lubrifont JP N', sans-serif; white-space: nowrap; }
+
+        .mode-toggle { cursor: pointer; opacity: 0.7; transition: opacity 0.3s; color: var(--text-color); font-size: 0.65rem; letter-spacing: 1px; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px solid rgba(0,0,0,0.15); }
+        .mode-toggle:hover { opacity: 1; }
+        .mode-toggle:hover .mode-label { opacity: 0; }
+        .mode-toggle:hover::after { content: attr(data-glitch); position: absolute; left: 0; width: 100%; text-align: right; color: var(--glitch-color); animation: stationary-flicker 0.3s steps(2) infinite; font-family: 'WDXL Lubrifont JP N', sans-serif; white-space: nowrap; }
+
+        .space-toggle { cursor: pointer; opacity: 0.45; transition: opacity 0.3s; color: var(--text-color); font-size: 0.65rem; letter-spacing: 1px; position: relative; display: inline-block; padding-bottom: 8px; margin-bottom: 4px; border-bottom: 1px solid rgba(0,0,0,0.15); }
+        .space-toggle:hover { opacity: 1; }
+        .space-toggle:hover .space-label { opacity: 0; }
+        .space-toggle:hover::after { content: attr(data-glitch); position: absolute; left: 0; width: 100%; text-align: right; color: var(--glitch-color); animation: stationary-flicker 0.3s steps(2) infinite; font-family: 'WDXL Lubrifont JP N', sans-serif; white-space: nowrap; }
+        .space-toggle.active { opacity: 1; color: #6b8fff; border-bottom-color: #6b8fff; }
+
+        /* --- SPACE MODE — 9:16 letterboxed frame --- */
+        .space-mode { background-color: #000000 !important; }
+        .space-mode .grid-bg {
+            width: min(100vw, calc(100vh * 9 / 16)) !important;
+            left: 50% !important;
+            transform: translateX(-50%) !important;
+            background: radial-gradient(ellipse at 50% 25%, #0b0b2d 0%, #030310 55%, #000000 100%) !important;
+            background-size: cover !important;
+            animation: space-pulse 7s ease-in-out infinite alternate;
+        }
+        @keyframes space-pulse {
+            from { filter: brightness(1); }
+            to   { filter: brightness(1.25) hue-rotate(25deg); }
+        }
+
+
+
+        /* --- THE ORANGE TERMINAL (ABOUT SECTOR) --- */
+        #about-sector {
+            display: none;
+            position: relative;
+            margin-top: 20px;
+            margin-bottom: 120px;
+            padding: 30px 20px 80px 20px;
+            background: #de7029 !important;
+            color: #000000;
+            text-align: left;
+            border: 2px solid #000000;
+            box-shadow: 10px 10px 0px rgba(0,0,0,0.2);
+            --glitch-color: #ffffff;
+            --highlight-color: #ffffff;
+        }
+
+        /* --- LOG HEADER ROW (button + path) --- */
+        .log-header-row { display: flex; align-items: baseline; gap: 10px; margin-bottom: 15px; }
+        .log-header-row .log-header { margin-bottom: 0; }
+        .cmd-trigger { display: inline !important; width: auto !important; margin: 0 !important; padding: 0 !important; font-size: 0.7rem !important; letter-spacing: 2px; font-weight: bold; color: rgba(0,0,0,0.6); cursor: pointer; white-space: nowrap; border: none; text-decoration: underline; text-underline-offset: 2px; }
+        .cmd-trigger:hover, .cmd-trigger:active { color: #ffffff !important; }
+        .about-toggle-link.stationary-glitch:hover::after, .about-toggle-link.stationary-glitch:active::after { color: #de7029 !important; }
+
+        /* --- CMD OVERLAY PANEL --- */
+        #cmd-panel {
+            display: none;
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #0c0c0c;
+            border: 2px solid #de7029;
+            z-index: 10;
+            padding: 24px 20px;
+            font-family: 'Consolas', 'Courier New', monospace;
+            color: #cccccc;
+            flex-direction: column;
+            justify-content: flex-start;
+        }
+        #cmd-panel.active { display: flex; }
+        .cmd-line { font-size: 0.72rem; letter-spacing: 0.5px; margin-bottom: 2px; line-height: 1.6; }
+        .cmd-header { color: #999999; }
+        .cmd-path { color: #cccccc; }
+        .cmd-warning { color: #f2f248; }
+        .cmd-prompt { color: #cccccc; }
+        .cmd-cursor { animation: cmd-blink 1s step-end infinite; }
+        @keyframes cmd-blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+        .cmd-actions { display: flex; gap: 16px; margin-top: 12px; }
+        .cmd-btn { font-size: 0.75rem; letter-spacing: 1px; cursor: pointer; padding: 2px 14px; border: 1px solid #555; color: #cccccc; transition: all 0.15s ease; font-family: 'Consolas', 'Courier New', monospace; }
+        .cmd-btn:hover { background: #cccccc; color: #0c0c0c; }
+        .cmd-input { background: transparent; border: none; outline: none; color: #cccccc; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.72rem; letter-spacing: 0.5px; width: 10ch; padding: 0; margin: 0; caret-color: transparent; }
+        .cmd-sass { font-size: 0.68rem; color: #ff4444; margin-top: 6px; min-height: 1.2em; letter-spacing: 0.5px; }
+        #cmd-qr { display: none; position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 20; align-items: center; justify-content: center; background: rgba(0,0,0,0.72); user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; flex-direction: column; }
+        #cmd-qr.active { display: flex; }
+        #cmd-qr canvas { pointer-events: none; image-rendering: pixelated; }
+        #cmd-qr-fakeid { position: absolute; top: 12px; right: 14px; font-family: 'Consolas', 'Courier New', monospace; font-size: 1.2rem; font-weight: bold; color: #de7029; letter-spacing: 2px; }
+        #cmd-qr-hint { margin-top: 10px; font-family: 'Consolas', 'Courier New', monospace; font-size: 0.62rem; color: #de7029; letter-spacing: 1px; opacity: 0.85; text-align: center; }
+        .cmd-copyright { position: absolute; bottom: 12px; left: 20px; font-size: 0.6rem; color: #555; letter-spacing: 0.5px; }
+
+        /* --- PREFACE TRANSITION --- */
+        .site-fading .main-terminal { transition: opacity 0.6s ease; opacity: 0.15; pointer-events: none; }
+        .site-fading #about-sector { transition: opacity 0.8s ease 0.4s; }
+        .site-fading.about-fade #about-sector { opacity: 0; }
+
+        /* --- PREFACE VIEW --- */
+        #preface-view {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            z-index: 500;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #111619;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+        }
+        #preface-view.active { opacity: 1; }
+        .preface-content {
+            max-width: 500px;
+            padding: 40px 20px;
+            text-align: left;
+            color: #ffffff;
+            font-family: 'WDXL Lubrifont JP N', monospace;
+        }
+        .preface-text {
+            font-size: 0.85rem;
+            line-height: 1.8;
+            letter-spacing: 1px;
+            opacity: 0.6;
+            margin-top: 20px;
+        }
+
+        #about-sector .sync-group, #about-sector .lore-glitch, #about-sector .close-btn-aligned, #about-sector span { font-family: 'WDXL Lubrifont JP N', sans-serif !important; transition: color 0.2s ease; }
+        #about-sector .sync-group:hover { color: #ffffff !important; }
+        #about-sector .lore-glitch:hover, #about-sector .nav-link:hover, #about-sector .close-btn-aligned:hover { color: transparent !important; }
+        #about-sector .lore-glitch:hover::after, #about-sector .nav-link:hover::after, #about-sector .close-btn-aligned:hover::after { color: #ffffff !important; }
+        #about-sector .log-header { font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 15px; color: rgba(0,0,0,0.6); font-weight: bold; }
+
+        .close-btn-aligned {
+            display: block !important; height: 30px; line-height: 30px; width: 155px !important;
+            text-align: center; border: 1px solid rgba(0,0,0,0.1);
+            padding: 0 !important; box-sizing: border-box; margin: 0 !important;
+            font-size: 0.9rem !important; position: relative; white-space: nowrap;
+        }
+        .close-btn-aligned::after { top: 0; left: 0; height: 100%; line-height: 30px; width: 100%; }
+
+        /* --- GLITCH LOGIC --- */
+        .originals-logo { animation: glitchUrsprung 12s infinite; }
+        @keyframes glitchUrsprung { 0%, 85%, 100% { content: url('elements/TDo-sub.png'); } 87%, 98% { content: url('elements/TDo-sub-glitch-de.png'); } }
+        .reimagined-logo { animation: glitchKonstruiert 7s infinite; }
+        @keyframes glitchKonstruiert { 0%, 80%, 100% { content: url('elements/TDre-sub.png'); } 82%, 97% { content: url('elements/TDre-sub-glitch-de.png'); } }
+
+        /* --- MOTION MEMORIES (TDmo) --- */
+        .tdmo-logo-wrap { display: block; }
+        .tdmo-logo-wrap img { width: 100%; display: block; }
+        .motionmemories-logo { transition: filter 0.3s ease, opacity 0.5s ease; }
+        .motionmemories-logo:hover { filter: drop-shadow(0 0 8px rgba(222, 112, 41, 0.5)) drop-shadow(0 0 20px rgba(222, 112, 41, 0.25)); }
+        .tdmo-tiktok { position: relative; }
+        .tdmo-tiktok:hover { color: transparent !important; }
+        .tdmo-tiktok:hover::after { content: '短 編 映 画'; position: absolute; left: 0; width: 100%; text-align: center; font-family: 'WDXL Lubrifont JP N', sans-serif; animation: tdmo-kanji-color-pulse 2s ease-in-out infinite; }
+        @keyframes tdmo-kanji-color-pulse { 0%, 100% { color: #de7029; opacity: 1; } 25% { color: #de7029; opacity: 0.3; } 50% { color: #b3a272; opacity: 1; } 75% { color: #b3a272; opacity: 0.3; } }
+
+        .nav-link { display: block; width: fit-content; margin: 14px auto; font-size: 0.75rem; color: var(--text-color); text-decoration: none; text-transform: lowercase; letter-spacing: 2px; position: relative; cursor: pointer; }
+        @media (max-width: 768px) { .nav-link { font-size: 1.15rem; } }
+        .lore-glitch { display: inline-block; position: relative; color: inherit; text-decoration: none; font-family: 'WDXL Lubrifont JP N', sans-serif; }
+        .nav-link:hover, .nav-link.glitch-active, .lore-glitch:hover, .lore-glitch.glitch-active { color: transparent; }
+        .nav-link:hover::after, .nav-link.glitch-active::after, .lore-glitch:hover::after, .lore-glitch.glitch-active::after { content: attr(data-glitch); position: absolute; left: 0; width: 100%; text-align: center; color: var(--glitch-color); animation: link-glitch 0.3s steps(2) infinite; font-family: 'WDXL Lubrifont JP N', sans-serif; white-space: nowrap; }
+        .stationary-glitch:hover::after, .stationary-glitch.glitch-active::after { animation: stationary-flicker 0.3s steps(2) infinite !important; }
+
+        @keyframes link-glitch { 0% { transform: translate(0); } 20% { transform: translate(-2px, 2px); } 40% { transform: translate(-2px, -2px); } 60% { transform: translate(2px, 2px); } 80% { transform: translate(2px, -2px); } 100% { transform: translate(0); } }
+        @keyframes stationary-flicker { 0%, 100% { opacity: 1; } 50% { opacity: 0.8; } }
+
+        .sync-group { transition: color 0.2s ease; cursor: help; }
+        #about-sector:has(.sync-sokuji:hover) .sync-sokuji { color: var(--highlight-color); }
+        #about-sector:has(.sync-henyi:hover) .sync-henyi { color: var(--highlight-color); }
+        .rede-toggle { display: inline-block; width: 1.0em; overflow: visible; }
+        .rede-toggle::after { content: "re"; animation: redeCycle 1s infinite; }
+        @keyframes redeCycle { 0%, 49% { content: "re"; } 50%, 100% { content: "de"; } }
+        .vi-toggle { display: inline-block; width: 1.5em; overflow: visible; }
+        .vi-toggle::after { content: "giải"; animation: viCycle 1.2s infinite; }
+        @keyframes viCycle { 0%, 49% { content: "giải"; } 50%, 100% { content: "tái"; } }
+
+        #lore-tooltip { position: absolute; display: none; width: 240px; background: var(--tooltip-bg); color: #fff; padding: 15px; border: 1px solid var(--glitch-color); font-family: monospace; font-size: 0.75rem; z-index: 1000; pointer-events: none; text-align: left; box-shadow: 0 10px 30px rgba(0,0,0,0.6); }
+        #lore-tooltip .word-head { font-size: 1rem; color: var(--glitch-color); margin-bottom: 2px; font-family: 'WDXL Lubrifont JP N', sans-serif; }
+        #lore-tooltip .reading { font-size: 0.65rem; opacity: 0.6; margin-bottom: 8px; border-bottom: 1px solid #333; padding-bottom: 4px; }
+        #lore-tooltip .jp-def { font-size: 0.8rem; margin-bottom: 5px; color: #eee; font-family: 'WDXL Lubrifont JP N', sans-serif; }
+        #lore-tooltip .en-def { font-size: 0.7rem; opacity: 0.5; font-style: italic; margin-bottom: 12px; }
+        
+        /* STATUS FOOTER CARD */
+        #status-footer { position: fixed; bottom: 42px; left: 50%; transform: translateX(-50%); font-size: calc(0.52rem + 2px); letter-spacing: 1px; z-index: 100; line-height: 1.6; text-transform: uppercase; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); padding: 12px 20px; border-radius: 4px; text-align: center; white-space: nowrap; min-width: 250px; box-sizing: border-box; }
+        @media (max-width: 768px) { #status-footer { min-width: 200px; } }
+        #status-footer .online-status { cursor: pointer; text-decoration: underline; transition: color 0.2s ease; }
+        #status-footer .online-status:hover { color: var(--glitch-color); }
+
+        #credit-footer { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); font-size: 0.52rem; letter-spacing: 1.5px; z-index: 100; background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); border-bottom: none; padding: 7px 20px; border-radius: 4px 4px 0 0; text-align: center; white-space: nowrap; color: var(--text-color); text-transform: none; }
+        #credit-footer a { color: var(--glitch-color); text-decoration: none; border-bottom: 1px solid currentColor; transition: opacity 0.2s; }
+        #credit-footer a:hover { opacity: 1; }
+        #admin-panel { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; z-index: 9999; background: rgba(0,0,0,0.45); backdrop-filter: blur(4px); -webkit-backdrop-filter: blur(4px); }
+        #admin-panel-inner { background: rgba(255,255,255,0.12); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 6px; padding: 24px 32px; min-width: 280px; max-width: 360px; font-size: 0.68rem; letter-spacing: 1.5px; color: var(--text-color); }
+        .admin-row { display: flex; justify-content: space-between; gap: 24px; padding: 5px 0; border-bottom: 1px solid rgba(0,0,0,0.08); }
+        .admin-row:last-child { border-bottom: none; }
+        .admin-count { color: var(--glitch-color); font-weight: bold; }
+
+        .reimagined-tag { display: inline-block; font-size: 0.75rem; letter-spacing: 8px; text-transform: uppercase; opacity: 0.6; cursor: help; border-bottom: 1px dashed currentColor; padding-bottom: 1px; }
+        @media (max-width: 768px) { .reimagined-tag { font-size: 0.6rem; } }
+        .signal-status { font-size: 0.75rem; letter-spacing: 1px; }
+        @media (max-width: 768px) { .signal-status { font-size: 0.8rem; } }
+
+        /* 1. Hide all footer blocks by default */
+        .lang-en-only, .lang-de-only, .lang-es-only,
+        .lang-fr-only, .lang-nl-only, .lang-vi-only,
+        .lang-pl-only {
+        display: none;
+        }
+
+        /* 2. Show the one that matches the active language */
+        [lang="en"] .lang-en-only { display: block; }
+        [lang="de"] .lang-de-only { display: block; }
+        [lang="es"] .lang-es-only { display: block; }
+        [lang="fr"] .lang-fr-only { display: block; }
+        [lang="nl"] .lang-nl-only { display: block; }
+        [lang="vi"] .lang-vi-only { display: block; }
+        [lang="pl"] .lang-pl-only { display: block; }
+
+        /* 4. BACK TO TOP BUTTON */
+        #back-to-top {
+            position: fixed; bottom: 85px; right: 25px;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(0,0,0,0.2); color: var(--text-color);
+            width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer;
+            z-index: 99; opacity: 0; pointer-events: none; transition: opacity 0.3s;
+            display: flex; justify-content: center; align-items: center; font-family: monospace;
+        }
+        #back-to-top.visible { opacity: 1; pointer-events: auto; }
+        #build-tag {
+            position: fixed; bottom: 50px; right: 25px;
+            font-size: 0.45rem; letter-spacing: 1px; color: var(--text-color);
+            opacity: 0.3; pointer-events: none; font-family: monospace;
+            text-align: center; line-height: 1.6; z-index: 99;
+        }
+
+        /* 5. RELEASE TO REFRESH */
+        #pull-refresh {
+            position: fixed; top: -70px; left: 0; width: 100%; text-align: center;
+            font-size: 0.7rem; letter-spacing: 2px; z-index: 1000;
+            transition: transform 0.2s ease-out; pointer-events: none;
+            color: var(--text-color); font-weight: bold; font-family: monospace;
+        }
+        .ptr-arrow {
+            display: block; font-size: 1.5rem; margin-bottom: 5px;
+            transition: transform 0.3s;
+        }
+        #pull-refresh.ready .ptr-arrow { transform: rotate(180deg); color: var(--highlight-color); }
+
+        /* --- AFEST BACK LINK --- */
+        #afest-back {
+            position: fixed; top: 10px; left: 10px;
+            font-size: 0.6rem; letter-spacing: 2px;
+            color: var(--text-color);
+            text-decoration: none; text-transform: uppercase;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+            padding: 6px 10px; z-index: 100;
+            transition: opacity 0.2s;
+        }
+        #afest-back:hover { opacity: 0.7; }
+
+        /* --- ON AIR INDICATOR --- */
+        #onair-indicator {
+            position: fixed; top: 44px; left: 10px;
+            display: none; /* hidden by default, shown by JS when live */
+            align-items: center; gap: 6px;
+            font-size: 0.6rem; letter-spacing: 2px;
+            background: rgba(255,255,255,0.1); backdrop-filter: blur(15px); -webkit-backdrop-filter: blur(15px);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 4px;
+            padding: 8px 12px; z-index: 100;
+        }
+        #onair-dot {
+            width: 7px; height: 7px; border-radius: 50%;
+            background: var(--glitch-color);
+            animation: onair-pulse 1.4s ease-in-out infinite;
+        }
+        @keyframes onair-pulse {
+            0%, 100% { opacity: 1; box-shadow: 0 0 4px var(--glitch-color); }
+            50%       { opacity: 0.3; box-shadow: none; }
+        }
+
+        /* --- ABOUT SECTOR SLIDE --- */
+        .about-slider { overflow: hidden; width: 100%; }
+        .about-slide-inner { display: flex; width: 200%; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+        .about-slide-inner.show-team { transform: translateX(-50%); }
+        #about-main { width: 50%; flex-shrink: 0; box-sizing: border-box; }
+        #about-team { width: 50%; flex-shrink: 0; box-sizing: border-box; padding-left: 4px; }
+        #about-team .log-header { font-size: 0.7rem; letter-spacing: 2px; margin-bottom: 15px; color: rgba(0,0,0,0.6); font-weight: bold; }
+        .about-crew-line { font-size: 0.82rem; line-height: 2.2; font-family: monospace; }
+        .about-crew-name { color: var(--highlight-color); }
+
+        /* Button rows — flex override for lang-xx-only */
+        .about-btn-row { gap: 10px; justify-content: center; align-items: center; margin-top: 18px; display: none; }
+        [lang="en"] .lang-en-only.about-btn-row,
+        [lang="de"] .lang-de-only.about-btn-row,
+        [lang="es"] .lang-es-only.about-btn-row,
+        [lang="fr"] .lang-fr-only.about-btn-row,
+        [lang="nl"] .lang-nl-only.about-btn-row,
+        [lang="vi"] .lang-vi-only.about-btn-row { display: flex; }
+        [lang="pl"] .lang-pl-only.about-btn-row { display: flex; }
+
+        .team-btn-aligned {
+            display: block !important; height: 30px; line-height: 30px; width: 155px !important;
+            text-align: center; border: 1px solid rgba(0,0,0,0.1);
+            padding: 0 !important; box-sizing: border-box; margin: 0 !important;
+            cursor: pointer; font-size: 0.9rem !important; position: relative; white-space: nowrap;
+        }
+
+    </style>
+    <script>
+        // Instant flash prevention — dark is default, only switch to light if explicitly saved
+        if (localStorage.getItem('Light Out') === 'false') {
+            document.documentElement.style.setProperty('--text-color', '#000000');
+            document.documentElement.style.setProperty('--glitch-color', '#de7029');
+            document.documentElement.style.setProperty('--bg-color', '#ffffff');
+            document.documentElement.style.backgroundColor = '#ffffff';
+        }
+
+        // Background rotation (mobile 9:16, desktop 1:1)
+        (function() {
+            const isMobile = window.innerWidth <= 768;
+            // UA-based: actual phone/tablet vs PC in a narrow window
+            const isActualMobile = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
+
+            const mobileBgs = ['bg-fone-dark-1.png', 'bg-fone-dark-2.png'];
+            const desktopBgs = ['bg-pc-dark-1.png', 'bg-pc-dark-2.png'];
+
+            const mobileLightBgs = ['bg-fone-light.png', 'bg-fone-hole-1.png', 'bg-fone-hole-2.png'];
+            const desktopLightBgs = ['bg-pc-light.png', 'bg-pc-hole-1.png', 'bg-pc-hole-2.png'];
+
+            const mobileFallbacks = {
+                'bg-fone-light.png': 'bg-fone.png',
+                'bg-fone-hole-1.png': 'bg-fone-solid-1.png',
+                'bg-fone-hole-2.png': 'bg-fone-solid-2.png'
+            };
+            const desktopFallbacks = {
+                'bg-pc-light.png': 'bg-pc.png',
+                'bg-pc-hole-1.png': 'bg-pc-solid-1.png',
+                'bg-pc-hole-2.png': 'bg-pc-solid-2.png'
+            };
+
+            const isLight = localStorage.getItem('Light Out') === 'false';
+            const bgs = isLight ? (isActualMobile ? mobileLightBgs : desktopLightBgs) : (isActualMobile ? mobileBgs : desktopBgs);
+            const fallbacks = isLight ? (isActualMobile ? mobileFallbacks : desktopFallbacks) : {};
+
+            function loadBackground() {
+                // applyDarkMode handles all BG selection (dark + light + canvas) at DOMContentLoaded
+                // This function is kept as a no-op to avoid overwriting applyDarkMode's setup
+            }
+
+            function setDualLayerBg(grid, bgFile) {
+                const isHole = holeFiles.some(f => bgFile.includes(f));
+                if (isHole && !isActualMobile) {
+                    // Non-phone: live canvas behind hole PNG — no GIF needed
+                    grid.style.backgroundImage = `url(elements/${bgFile})`;
+                    grid.style.backgroundSize = 'auto 100%';
+                    grid.style.backgroundPosition = 'center center';
+                    grid.style.backgroundRepeat = 'no-repeat';
+                    positionAndStartMatrix(grid);
+                } else if (isHole) {
+                    // Actual phone/tablet: GIF layer
+                    grid.style.backgroundImage = `url(elements/${bgFile}), url(elements/matrix-fone.gif)`;
+                    grid.style.backgroundSize = 'auto 100%, auto 100%';
+                    grid.style.backgroundPosition = 'center center, center center';
+                    grid.style.backgroundRepeat = 'no-repeat, no-repeat';
+                } else {
+                    stopMatrix(grid);
+                    // Single layer: just the solid BG
+                    grid.style.backgroundImage = `url(elements/${bgFile})`;
+                    grid.style.backgroundSize = 'auto 100%';
+                    grid.style.backgroundPosition = 'center center';
+                    grid.style.backgroundRepeat = 'no-repeat';
+                }
+            }
+
+            document.addEventListener('DOMContentLoaded', loadBackground);
+        })();
+    </script>
+</head>
+<body>
+
+    <canvas id="matrix-canvas"></canvas>
+    <div class="grid-bg"></div>
+
+    <!-- AFEST BACK LINK -->
+    <a id="afest-back" href="https://afest.io">← AFEST</a>
+
+    <!-- ON AIR INDICATOR — status driven by Gist fetch below -->
+    <div id="onair-indicator">
+        <div id="onair-dot"></div>
+        <span id="onair-label">ON AIR</span>
+    </div>
+    <div id="lore-tooltip"></div>
+
+    <div id="pull-refresh">
+        <span class="ptr-arrow">↓</span>
+        指を離して更新
+    </div>
+
+    <div class="lang-switch" id="lang-container">
+    <span class="mode-toggle" id="mode-toggle" data-glitch="Unplug?" onclick="toggleDarkLight()"><span class="mode-label">Dark  </span></span>
+    <span class="space-toggle" id="space-toggle" data-glitch="Orbit?" onclick="toggleSpace()"><span class="space-label">Space </span></span>
+    <span class="lang-btn active" id="btn-en" onclick="setLanguage('en')" data-glitch="アメリカ">EN英語</span>
+    <span class="lang-btn" id="btn-de" onclick="setLanguage('de')" data-glitch="ドイツ語">DE独語</span>
+
+    <span id="btn-expand" class="lang-btn" style="opacity: 0.6;" title="More languages" onclick="toggleExtraLangs(true)">[  +  ]</span>
+
+    <div id="extra-langs-drawer" style="display: none; flex-direction: column; gap: 12px; margin-top: 12px;">
+        <span class="lang-btn" id="btn-es" onclick="setLanguage('es')">ES西語</span>
+        <span class="lang-btn" id="btn-fr" onclick="setLanguage('fr')">FR仏語</span>
+        <span class="lang-btn" id="btn-nl" onclick="setLanguage('nl')">NL蘭語</span>
+        <span class="lang-btn" id="btn-vi" onclick="setLanguage('vi')">VI越語</span>
+        <span class="lang-btn" id="btn-pl" onclick="setLanguage('pl')">PL波語</span>
+        <span class="lang-btn" style="opacity: 0.6;" onclick="toggleExtraLangs(false)">[  ↑  ]</span>
+    </div>
+</div>
+
+    <div id="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">↑</div>
+    <div id="build-tag">0326<br>1943</div>
+
+    <div class="main-terminal">
+        <video class="main-logo" id="logo-video" autoplay muted playsinline style="mix-blend-mode: multiply;">
+            <source src="elements/TDlogo-light.webm" type="video/webm">
+            <source src="elements/TDlogo-light.mp4" type="video/mp4">
+        </video>
+
+        <div class="intro-wrap">
+            <span class="intro-track">Where worlds are <span class="intro-key">Unmade</span> and <span class="intro-key">Reimagined</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Hier werden Welten <span class="intro-key">Aufgelöst</span> und <span class="intro-key">Neu Erdacht</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; 世界が<span class="intro-key">壊され</span>、<span class="intro-key">再び織られる</span>場所 &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Donde los mundos son <span class="intro-key">Deshechos</span> y <span class="intro-key">Reimaginados</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Where worlds are <span class="intro-key">Unmade</span> and <span class="intro-key">Reimagined</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Là où les mondes se <span class="intro-key">Défont</span> et se <span class="intro-key">Réimaginent</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; 世界が<span class="intro-key">壊され</span>、<span class="intro-key">再び織られる</span>場所 &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Waar werelden worden <span class="intro-key">Ontmaakt</span> en <span class="intro-key">Opnieuw Verbeeld</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Hier werden Welten <span class="intro-key">Aufgelöst</span> und <span class="intro-key">Neu Erdacht</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; 世界が<span class="intro-key">壊され</span>、<span class="intro-key">再び織られる</span>場所 &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Where worlds are <span class="intro-key">Unmade</span> and <span class="intro-key">Reimagined</span> &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Nơi thế giới và ký ức <span class="intro-key">Tan&nbsp;Vỡ</span> và <span class="intro-key">Tái&nbsp;Tạo</span> lại &nbsp;&nbsp;&mdash;&nbsp;&nbsp; Gdzie światy są <span class="intro-key">Rozplatane</span> i <span class="intro-key">Przekute</span></span>
+        </div>
+
+        <!-- [ ABOUT LINK ] -->
+        <div class="lang-en-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> PREFACE">自己紹介 what_is TD about?</a></div>
+        <div class="lang-de-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> VORWORT">自己紹介 worum_geht es bei TD?</a></div>
+        <div class="lang-es-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> PREFACIO">自己紹介 ¿qué_es TD?</a></div>
+        <div class="lang-fr-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> PRÉFACE">自己紹介 qu_est_ce que TD?</a></div>
+        <div class="lang-nl-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> VOORWOORD">自己紹介 woaar_gaat TD over?</a></div>
+        <div class="lang-vi-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> TỰA_ĐẦU">自己紹介 TD là_gì?</a></div>
+        <div class="lang-pl-only" style="text-align: center; margin-bottom: 20px;"><a href="javascript:void(0)" class="nav-link stationary-glitch about-toggle-link" onclick="toggleAbout()" data-glitch="> PRZEDMOWA">自己紹介 czym_jest TD?</a></div>
+
+        <!-- [ SHARED PLATFORM LINKS ] -->
+        <img src="elements/TDo-sub.png" class="subtext-header originals-logo">
+        <div class="sector">
+            <a href="https://open.spotify.com/artist/3hvsLZ6fWjtB6y6eRcYUat" class="nav-link" data-glitch="[ 完全変異 ]">/spotify</a>
+            <a href="https://music.apple.com/us/artist/twisted-duality/1882004399" class="nav-link" data-glitch="[ 音声同期 ]">/apple-music</a>
+            <a href="https://soundcloud.com/twysted1" class="nav-link" data-glitch="[ 起源合成 ]">TDo/soundcloud</a>
+            <a href="https://twysted.bandcamp.com" class="nav-link" data-glitch="[ 深層書庫 ]">/bandcamp</a>
+            <a href="https://instagram.com/twst.dual" class="nav-link" data-glitch="[ 網膜投影 ]">/instagram</a>
+        </div>
+
+        <img src="elements/TDre-sub.png" class="subtext-header reimagined-logo">
+        <div class="sector">
+            <a href="https://soundcloud.com/twysted-re" class="nav-link" data-glitch="[ 構 造 継 承 ]">TDre/soundcloud</a>
+        </div>
+
+        <!-- [ MOTION MEMORIES: TDmo ] -->
+        <!-- Logo files per language (upload when ready):
+             Light: TDmo-sub-black.png (EN), TDmo-sub-black-JA.png, TDmo-sub-black-DE.png, TDmo-sub-black-ES.png, TDmo-sub-black-FR.png, TDmo-sub-black-NL.png, TDmo-sub-black-VI.png, TDmo-sub-black-PL.png
+             Dark:  TDmo-sub-white.png (EN), TDmo-sub-white-JA.png, TDmo-sub-white-DE.png, TDmo-sub-white-ES.png, TDmo-sub-white-FR.png, TDmo-sub-white-NL.png, TDmo-sub-white-VI.png, TDmo-sub-white-PL.png
+             Space: TDmo-sub-gold.png  (EN), TDmo-sub-gold-JA.png,  TDmo-sub-gold-DE.png,  TDmo-sub-gold-ES.png,  TDmo-sub-gold-FR.png,  TDmo-sub-gold-NL.png,  TDmo-sub-gold-VI.png,  TDmo-sub-gold-PL.png -->
+        <div class="subtext-header tdmo-logo-wrap">
+            <img src="elements/TDmo-sub-white.png" class="motionmemories-logo" id="tdmo-logo">
+        </div>
+        <div class="sector">
+            <a href="https://tiktok.com/@motionmemories.td" class="nav-link tdmo-tiktok">/tiktok</a>
+        </div>
+
+        <!-- [ CURRENT TRANSMISSION ] -->
+        <div class="lang-en-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">CURRENT TRANSMISSION</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ 核心：ECHOES ]">apple-music：listen_now</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ 核心：ECHOES ]">spotify：listen_now</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Re/imagined. Reimagined from ILLENIUM x NURKO Remix">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：listen_now</a>
+            </div>
+        </div>
+        <div class="lang-de-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">AKTUELLE ÜBERTRAGUNG</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ KERN：残響 ]">apple-music：jetzt_anhören</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ KERN：残響 ]">spotify：jetzt_anhören</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Re/konstrukt. Neu interpretiert auf Basis des ILLENIUM x NURKO Remix">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：jetzt_anhören</a>
+            </div>
+        </div>
+        <div class="lang-es-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">TRANSMISIÓN ACTUAL</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ CENTRO：残響 ]">apple-music：oye_ahora</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ CENTRO：残響 ]">spotify：oye_ahora</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Re/creación. Reimaginado del remix de ILLENIUM x NURKO">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：oye_ahora</a>
+            </div>
+        </div>
+        <div class="lang-fr-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">TRANSMISSION ACTUELLE</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ CŒUR：残響 ]">apple-music：écoutez_ça</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ CŒUR：残響 ]">spotify：écoutez_ça</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Re/forge. Réinterprété à partir du remix ILLENIUM x NURKO">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：écoutez_ça</a>
+            </div>
+        </div>
+        <div class="lang-nl-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">HUIDIGE TRANSMISSIE</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ KERN：残響 ]">apple-music：luister_nu</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ KERN：残響 ]">spotify：luister_nu</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Re/vorm. Opnieuw vervormd van de ILLENIUM x NURKO Remix">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：luister_nu</a>
+            </div>
+        </div>
+        <div class="lang-vi-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">LÀN&nbsp;SÓNG HIỆN&nbsp;TẠI</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ 核心：âm_vang ]">apple-music：nghe_liền</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ 核心：âm_vang ]">spotify：nghe_liền</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Rèn/lại cảmxúc. Tái tạo từ bản remix ILLENIUM x NURKO">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：nghe_liền</a>
+            </div>
+        </div>
+        <div class="lang-pl-only" style="margin-top: 50px; margin-bottom: 30px; border-top: 1px solid rgba(0,0,0,0.1); padding-top: 30px;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">TRANSMISJA W TOKU</div>
+            <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 14px;">[ <span class="notranslate">ECHOES BEHIND</span> ]</div>
+            <a href="https://music.apple.com/us/song/echoes-behind/1882062320" class="nav-link stationary-glitch" data-glitch="[ 核心：ECHA ]">apple-music：słuchaj_teraz</a>
+            <a href="https://open.spotify.com/track/3TrG4BUOPAcghfq9GAoi5d" class="nav-link stationary-glitch" data-glitch="[ 核心：ECHA ]">spotify：słuchaj_teraz</a>
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px solid rgba(0,0,0,0.08);">
+                <div style="font-size: 1.125rem; font-weight: bold; margin-bottom: 2px;">[ <span class="notranslate">Golden Hour</span> &mdash; <a href="https://www.instagram.com/reel/CkOZ9-CqJnK/" target="_blank" class="notranslate" style="color:inherit;text-decoration:none;border-bottom:1px solid currentColor;">JVKE</a> ]</div>
+                <div style="margin-bottom: 12px;"><span class="reimagined-tag" data-reimagined="Re/kuźńia. Przerobiony z remiksu ILLENIUM x NURKO">Re/imagined</span></div>
+                <a href="https://soundcloud.com/twysted-re/goldenhour-tdre" class="nav-link stationary-glitch" data-glitch="[ 構造継承 ]">TDre/soundcloud：słuchaj_teraz</a>
+            </div>
+        </div>
+
+        <!-- [ UPCOMING TRANSMISSION ] -->
+        <div class="lang-en-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">UPCOMING TRANSMISSION</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ from_<span class="notranslate">領コア</span> ]</div>
+            <div class="signal-status">SIGNAL STRENGTH：recalibrating</div>
+        </div>
+        <div class="lang-de-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">KOMMENDE ÜBERTRAGUNG</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ aus_<span class="notranslate">領コア</span> ]</div>
+            <div class="signal-status">SIGNALSTÄRKE：rekalibrierung</div>
+        </div>
+        <div class="lang-es-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">PRÓXIMA TRASPASO</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ desde_<span class="notranslate">領コア</span> ]</div>
+            <div class="signal-status">INTENSIDAD DE LA SEÑAL：<br>recalibrando</div>
+        </div>
+        <div class="lang-fr-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">PROCHAIN TRANSFERT</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ depuis_<span class="lore-glitch notranslate" data-glitch="LYOKO">領コア</span> ]</div>
+            <div class="signal-status">FORCE DU SIGNAL：<br><span class="lore-glitch" data-glitch="Jérémie B enquête">en cours de recalibrage</span></div>
+        </div>
+        <div class="lang-nl-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">KOMENDE TRANSMISSIE</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ van_<span class="notranslate">領コア</span> ]</div>
+            <div class="signal-status">SIGNAALSTERKTE：herkalibrerend</div>
+        </div>
+        <div class="lang-vi-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">LÀN&nbsp;SÓNG KẾ TIẾP</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ đếntừ_<span class="notranslate">領コア</span> ]</div>
+            <div class="signal-status">CƯỜNG&nbsp;ĐỘ TÍN&nbsp;HIỆU：đang khuếch&nbsp;đại</div>
+        </div>
+        <div class="lang-pl-only" style="margin-top: 30px; margin-bottom: 30px; opacity: 0.6;">
+            <div style="font-size: 0.75rem; letter-spacing: 2px; margin-bottom: 10px;">NADCHODZĄCA TRANSMISJA</div>
+            <div style="font-size: 0.9rem; font-weight: bold; margin-bottom: 10px;">[ z_<span class="notranslate">領コア</span> ]</div>
+            <div class="signal-status">SIŁA SYGNAŁU：rekalibracja</div>
+        </div>
+
+        <div style="height: 80vh; width: 100%;"></div>
+
+        <div id="about-sector">
+            <!-- CMD OVERLAY PANEL -->
+            <div id="cmd-panel" oncontextmenu="return false">
+                <div class="cmd-line cmd-header" id="cmd-device-line"></div>
+                <div class="cmd-line cmd-header" id="cmd-session-line"></div>
+                <br>
+                <div class="cmd-line cmd-path">C:\TD\NETWORK&gt; cmd /c td preface --runas admin</div>
+                <br>
+                <div class="cmd-line cmd-warning">WARNING: Navigating outside network boundary.</div>
+                <div class="cmd-line cmd-warning">This operation requires elevated privileges.</div>
+                <br>
+                <div class="cmd-line cmd-prompt">Proceed? (Y/N): <input type="text" id="cmd-input" class="cmd-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="20"><span class="cmd-cursor">█</span></div>
+                <div class="cmd-sass" id="cmd-sass"></div>
+                <div class="cmd-actions">
+                    <span class="cmd-btn cmd-enter" onclick="executePreface()">Y</span>
+                    <span class="cmd-btn cmd-cancel" onclick="closeCmdPanel()">N</span>
+                </div>
+                <div id="cmd-qr"></div>
+                <div class="cmd-copyright">(c) Twisted Duality Corporation. All rights reserved.</div>
+            </div>
+            <div class="about-slider">
+                <div class="about-slide-inner" id="about-slide-inner">
+
+                    <div id="about-main">
+                        <div class="lang-en-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                We <span class="sync-group sync-sokuji"><span class="rede-toggle"></span>/construct</span><br> <span class="lore-glitch" data-glitch="W&nbsp;A&nbsp;V&nbsp;E&nbsp;S">[&nbsp;SOUND&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;EMOTION&nbsp;]</span> into immersive landscapes.
+                                From melodic beauty to <span class="sync-group sync-henyi">industrial&nbsp;decay</span>. This is the heartbeat of the vessel.
+                                Where worlds are unmade and <span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">REIMAGINED</span>.
+                            </p>
+                        </div>
+                        <div class="lang-de-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                Wir <span class="sync-group sync-sokuji"><span class="rede-toggle"></span>/konstruieren</span><br> <span class="lore-glitch" data-glitch="S&nbsp;O&nbsp;U&nbsp;N&nbsp;D">[&nbsp;KLANG&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;EMOTION&nbsp;]</span> durch <span class="sync-group sync-henyi">extreme&nbsp;Manipulation</span>.<br>
+                                Von der Schönheit des Lichts bis zum Zerfall der Schatten—der Herzschlag des Universums.
+                                Hier werden Welten aufgelöst und <span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">NEU&nbsp;ERDACHT</span>.
+                            </p>
+                        </div>
+                        <div class="lang-es-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                Nosotros <span class="sync-group sync-sokuji"><span class="rede-toggle"></span>/construimos</span><br> <span class="lore-glitch" data-glitch="S&nbsp;O&nbsp;U&nbsp;N&nbsp;D">[&nbsp;SONIDO&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;EMOCIÓN&nbsp;]</span> en paisajes envolventes.
+                                De la belleza melódica a la <span class="sync-group sync-henyi">decadencia&nbsp;industrial</span>. Este es el latido de la nave.
+                                Donde los mundos son deshechos y <span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">REIMAGINADOS</span>.
+                            </p>
+                        </div>
+                        <div class="lang-fr-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                Nous <span class="sync-group sync-sokuji"><span class="rede-toggle"></span>/construisons</span><br> <span class="lore-glitch" data-glitch="S&nbsp;O&nbsp;U&nbsp;N&nbsp;D">[&nbsp;SON&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;ÉMOTION&nbsp;]</span> en paysages immersifs.
+                                De la beauté mélodique au <span class="sync-group sync-henyi">délitement&nbsp;industriel</span>. Voici la&nbsp;pulsation du&nbsp;vaisseau.
+                                Où les mondes sont détissés et&nbsp;<span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">REFORGÉS</span>.
+                            </p>
+                        </div>
+                        <div class="lang-nl-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                Wij <span class="sync-group sync-sokuji"><span class="rede-toggle"></span>/construeren</span><br> <span class="lore-glitch" data-glitch="S&nbsp;O&nbsp;U&nbsp;N&nbsp;D">[&nbsp;GELUID&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;EMOTIE&nbsp;]</span> tot immersieve landschappen.
+                                Van melodische schoonheid tot <span class="sync-group sync-henyi">industrieel&nbsp;verval</span>. Dit is de hartslag van het vaartuig.
+                                Waar werelden worden ontrafeld en&nbsp;<span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">HERGESCHAPEN</span>.
+                            </p>
+                        </div>
+                        <div class="lang-vi-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                Chúng&nbsp;tôi <span class="sync-group sync-sokuji"><span class="vi-toggle"></span>/cấu&nbsp;trúc</span><br> <span class="lore-glitch" data-glitch="S&nbsp;O&nbsp;U&nbsp;N&nbsp;D">[&nbsp;ÂM&nbsp;THANH&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;CẢM&nbsp;XÚC&nbsp;]</span> thành những cảm&nbsp;xúc đắm&nbsp;chìm.
+                                Từ vẻ đẹp của giai&nbsp;điệu đến cực&nbsp;đỉnh <span class="sync-group sync-henyi">tan&nbsp;rã tâm&nbsp;hồn</span>. Nơi đây tạo ra nhịp&nbsp;đập của bản&nbsp;thể.
+                                Nơi thế&nbsp;giới và ký&nbsp;ức xưa được tháo gỡ và <span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">TÁI&nbsp;TẠO&nbsp;LẠI</span> cảm&nbsp;xúc mới.
+                            </p>
+                        </div>
+                        <div class="lang-pl-only">
+                            <div class="log-header-row">
+                                <span class="cmd-trigger" onclick="openCmdPanel()">[ run_cmd ]</span>
+                                <span class="log-header">TD:// LOGS.PERSONA_ARCHIVE</span>
+                            </div>
+                            <p style="font-size: 0.85rem; line-height: 1.8; margin-bottom: 15px; font-family: monospace;">
+                                <span class="lore-glitch stationary-glitch dictionary-trigger notranslate" data-glitch="双極の螺旋"><span class="notranslate">Twisted&nbsp;Duality</span></span> <span style="font-family: 'WDXL Lubrifont JP N', sans-serif;">//</span> <span class="sync-group sync-sokuji">創作</span> <span style="font-family: 'WDXL Lubrifont JP N';">to</span> <span class="sync-group sync-henyi">変異</span><br><br>
+                                My <span class="sync-group sync-sokuji"><span class="rede-toggle"></span>/konstruujemy</span><br> <span class="lore-glitch" data-glitch="S&nbsp;O&nbsp;U&nbsp;N&nbsp;D">[&nbsp;DŹWIĘK&nbsp;]</span> + <span class="lore-glitch glitch-rare" data-glitch="UWU&nbsp;(:&nbsp;ON">[&nbsp;EMOCJĘ&nbsp;]</span> w immersyjne krajobrazy.
+                                Od melodyjnego piękna po <span class="sync-group sync-henyi">industrialny rozpad</span>. Oto tętno jednostki.
+                                Gdzie światy są rozplatane i&nbsp;<span class="lore-glitch stationary-glitch" data-glitch="サイコウチク">PRZEKUTE</span>.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div id="about-team">
+                        <div class="log-header">//: LOG_START [CREW_ARCHIVE]</div>
+                        <div class="about-crew-line"><span class="about-crew-name">Kyle Wyred</span> — Composer &amp; Production Lead</div>
+                        <div class="about-crew-line"><span class="about-crew-name">Lukas Vesper</span> — Lyric &amp; Vocal Design/Synthesizer</div>
+                        <div class="about-crew-line"><span class="about-crew-name">Kaelen Pham</span> — Graphic &amp; Animation</div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Per-language button rows -->
+            <div class="lang-en-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="   パ イ ロ ッ ト   " data-glitch-original="[ パイロット ]" data-original-text="[  the_team  ]"> [   the_team   ] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [ close_file ] </a>
+            </div>
+            <div class="lang-de-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="  宇 宙 ＿ pilots  " data-glitch-original="[  宇宙_pilots  ]" data-original-text="[  die_besatzung ]"> [die_besatzung] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [datei_schließen] </a>
+            </div>
+            <div class="lang-es-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="  u n i d a d ＿ 組  " data-glitch-original="[  unidad_組  ]" data-original-text="[   la_tripulación  ]"> [  la_tripulación  ] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [  cerrar_archivo  ] </a>
+            </div>
+            <div class="lang-fr-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="  u n i t é ＿ 組  " data-glitch-original="[  unité_組  ]" data-original-text="[ l_equipage ]"> [   l_equipage   ] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [       fermer       ] </a>
+            </div>
+            <div class="lang-nl-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="  宇宙 ＿ piloten  " data-glitch-original="[  宇宙_piloten  ]" data-original-text="[  de_bemanning  ]"> [   de_bemanning   ] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [    afsluiten    ] </a>
+            </div>
+            <div class="lang-vi-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="  đội_宇宙士  " data-glitch-original="[  đội_宇宙士  ]" data-original-text="[  ê_kíp  ]"> [  ê_kíp  ] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [   đóng_hồsơ   ] </a>
+            </div>
+            <div class="lang-pl-only about-btn-row">
+                <span class="nav-link stationary-glitch team-btn-aligned team-btn-trigger" onclick="toggleTeam()" data-glitch="  乗組員＿ZAŁOGA  " data-glitch-original="[  乗組員：ZAŁOGA  ]" data-original-text="[     zespół     ]"> [    zespół    ] </span>
+                <a href="javascript:void(0)" onclick="toggleAbout()" class="nav-link stationary-glitch close-btn-aligned" data-glitch="   閉 じ る   "> [  zamknij_plik  ] </a>
+            </div>
+        </div>
+    </div>
+
+    <div id="status-footer">
+        <div class="lang-en-only">[ AU証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">CORE</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="ONLINE" data-word-offline="OFFLINE">ONLINE</span><br>"TWO FREQUENCIES. ONE VESSEL."</div>
+        <div class="lang-de-only">[ BE証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">KERN</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="BEREIT" data-word-offline="GETRENNT">BEREIT</span><br>"ZWEI FREQUENZEN. EIN GEFÄSS."</div>
+        <div class="lang-es-only">[ AU証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">CENTRO</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="EN_LA_RED" data-word-offline="DESCONECTADO">EN_LA_RED</span><br>"DOS FRECUENCIAS. UN RECIPIENTE."</div>
+        <div class="lang-fr-only">[ AU証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">CŒUR</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="EN_LIGNE" data-word-offline="HORS_LIGNE">EN_LIGNE</span><br>"DEUX FRÉQUENCES. UN SEUL&nbsp;NAVIRE."</div>
+        <div class="lang-nl-only">[ AU証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">KERN</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="ONLINE" data-word-offline="OFFLINE">ONLINE</span><br>"TWEE FREQUENTIES. ÉÉN VAARTUIG."</div>
+        <div class="lang-vi-only">[ AU証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">CỐTLÕI</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="TRỰC_TUYẾN" data-word-offline="NGOẠI_TUYẾN">TRỰC_TUYẾN</span><br>"HAI TẦN&nbsp;SỐ. MỘT QUỸ&nbsp;ĐẠO"</div>
+        <div class="lang-pl-only">[ AU証：<span class="lore-glitch stationary-glitch notranslate" data-glitch="核心">RDZEŃ</span> ] -> STATUS: <span class="online-status" onclick="checkPassword()" data-word-online="POŁĄCZONY" data-word-offline="ROZŁĄCZONY">POŁĄCZONY</span><br>"DWIE CZĘSTOTLIWOŚCI. JEDNA JEDNOSTKA."</div>
+    </div>
+
+    <div id="credit-footer"><span onclick="openAdminPanel()" style="cursor:default;user-select:none;">&copy;</span> 2024&ndash;2025 Twisted&nbsp;Duality&trade; &amp; Reimagined&trade; &mdash; contrusted by <a href="https://instagram.com/wyred.on" target="_blank">@wyred.on</a></div>
+
+    <div id="admin-panel" style="display:none;">
+        <div id="admin-panel-inner">
+            <div style="font-size:0.65rem;letter-spacing:3px;margin-bottom:16px;opacity:0.5;">[ ARCHIVE METRICS ]</div>
+            <div id="admin-stats"><div style="text-align:center;opacity:0.4;font-size:0.65rem;">loading...</div></div>
+            <div style="margin-top:16px;text-align:center;">
+                <span onclick="closeAdminPanel()" style="font-size:0.6rem;letter-spacing:2px;cursor:pointer;opacity:0.5;">[ close_access ]</span>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.min.js"></script>
+    <script>
+        // --- SCROLL TO TOP ON REFRESH ---
+        if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+        window.scrollTo(0, 0);
+
+        // --- ANALYTICS ---
+        const WORKER_URL = 'https://td-webanalytics.midcember.workers.dev';
+        function track(event) {
+            fetch(`${WORKER_URL}/track`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ event })
+            }).catch(() => {});
+        }
+        track('visits');
+
+        const langState = { current: 'en' };
+
+        // Dark mode toggle — per-language labels
+        const modeLabels = {
+            en: { light: 'Light\xa0', dark: 'Dark\xa0\xa0', space: 'Space\xa0', glitchLight: 'Unplug?\xa0', glitchDark: 'Too\xa0dark?\xa0', glitchSpace: 'Orbit?\xa0' },
+            de: { light: 'Heller', dark: 'Dunkel', space: 'Orbit\xa0', glitchLight: 'Ziehen?\xa0', glitchDark: 'Licht\xa0ON?\xa0', glitchSpace: 'Weltraum?\xa0' },
+            es: { light: 'Claro\xa0', dark: 'Oscuro', space: 'Espacio', glitchLight: 'Lo\xa0atenuo?\xa0', glitchDark: 'ON la\xa0luz?\xa0', glitchSpace: 'Orbita?\xa0' },
+            fr: { light: 'Clair\xa0', dark: 'Sombre', space: 'Cosmos', glitchLight: 'Debrancher?\xa0', glitchDark: 'Vois\xa0pas?\xa0', glitchSpace: 'En orbite?' },
+            vi: { light: 'Sang ro', dark: 'Toi tam', space: 'Vu tru', glitchLight: 'Tat den?\xa0', glitchDark: 'Toi qua a?\xa0', glitchSpace: 'Quy dao?\xa0' },
+            nl: { light: 'Licht\xa0', dark: 'Donker', space: 'Ruimte', glitchLight: 'Licht\xa0uit?\xa0', glitchDark: 'Licht\xa0aan?\xa0', glitchSpace: 'Baan?\xa0' },
+            pl: { light: 'Jasny\xa0', dark: 'Ciemny', space: 'Kosmos', glitchLight: 'Wylacyc?\xa0', glitchDark: 'Zapalic?\xa0', glitchSpace: 'Orbita?\xa0' }
+        };
+
+        function toggleDarkLight() {
+            const current = localStorage.getItem('td_mode') || 'dark';
+            const next = (current === 'dark' || current === 'space') ? 'light' : 'dark';
+            localStorage.setItem('td_mode', next);
+            applyDarkMode(next === 'dark');
+        }
+
+        function toggleSpace() {
+            const current = localStorage.getItem('td_mode') || 'dark';
+            if (current === 'space') {
+                localStorage.setItem('td_mode', 'dark');
+                applyDarkMode(true);
+            } else {
+                localStorage.setItem('td_mode', 'space');
+                applySpaceMode();
+            }
+        }
+
+        function updateModeLabel() {
+            const toggle = document.getElementById('mode-toggle');
+            const label = toggle.querySelector('.mode-label');
+            const lang = langState.current;
+            const mode = localStorage.getItem('td_mode') || (localStorage.getItem('Light Out') === 'false' ? 'light' : 'dark');
+            const labels = modeLabels[lang] || modeLabels.en;
+            // Dark/Light toggle always shows current dark/light state
+            const isDark = (mode === 'dark' || mode === 'space');
+            label.textContent = isDark ? labels.dark : labels.light;
+            toggle.setAttribute('data-glitch', isDark ? labels.glitchDark : labels.glitchLight);
+            // Space toggle: active = in space, inactive = not in space
+            const spaceToggle = document.getElementById('space-toggle');
+            if (spaceToggle) {
+                const spaceLabel = spaceToggle.querySelector('.space-label');
+                if (mode === 'space') {
+                    spaceToggle.classList.add('active');
+                    spaceToggle.setAttribute('data-glitch', 'Earth');
+                    if (spaceLabel) spaceLabel.textContent = labels.space || 'Space ';
+                } else {
+                    spaceToggle.classList.remove('active');
+                    spaceToggle.setAttribute('data-glitch', labels.glitchSpace || 'Orbit? ');
+                    if (spaceLabel) spaceLabel.textContent = labels.space || 'Space ';
+                }
+            }
+        }
+
+        function applyDarkMode(dark) {
+            const grid = document.querySelector('.grid-bg');
+            const video = document.getElementById('logo-video');
+            const isActualMobile = /iPad|iPhone|iPod|Android/i.test(navigator.userAgent);
+
+            // Strip space-mode class so CSS overrides are removed
+            document.documentElement.classList.remove('space-mode');
+
+            if (dark) {
+                document.documentElement.style.setProperty('--text-color', '#ffffff');
+                document.documentElement.style.setProperty('--glitch-color', '#b3a272');
+                document.documentElement.style.setProperty('--bg-color', '#111619');
+                document.documentElement.style.backgroundColor = '#111619';
+                const tcMeta = document.getElementById('theme-color-meta'); if (tcMeta) tcMeta.content = '#111619';
+                stopMatrix(grid);
+                if (grid) {
+                    const darkBgs = isActualMobile
+                        ? ['bg-fone-dark-1.png', 'bg-fone-dark-2.png']
+                        : ['bg-pc-dark-1.png', 'bg-pc-dark-2.png'];
+                    const darkBg = darkBgs[Math.floor(Math.random() * darkBgs.length)];
+                    grid.style.opacity = '0';
+                    setTimeout(() => { grid.style.backgroundImage = 'url(elements/' + darkBg + ')'; grid.style.opacity = '1'; }, 500);
+                }
+                if (video) {
+                    video.style.mixBlendMode = 'screen';
+                    video.innerHTML = '<source src="elements/TDlogo-dark.webm" type="video/webm"><source src="elements/TDlogo-dark.mp4" type="video/mp4">';
+                    video.load();
+                }
+            } else {
+                document.documentElement.style.setProperty('--text-color', '#000000');
+                document.documentElement.style.setProperty('--glitch-color', '#de7029');
+                document.documentElement.style.setProperty('--bg-color', '#ffffff');
+                document.documentElement.style.backgroundColor = '#ffffff';
+                const tcMetaL = document.getElementById('theme-color-meta'); if (tcMetaL) tcMetaL.content = '#ffffff';
+                const bgs = isActualMobile
+                    ? ['bg-fone-light.png', 'bg-fone-hole-1.png', 'bg-fone-hole-2.png']
+                    : ['bg-pc-light.png', 'bg-pc-hole-1.png', 'bg-pc-hole-2.png'];
+                if (grid) {
+                    const bg = bgs[Math.floor(Math.random() * bgs.length)];
+                    const isHoleBg = holeFiles.some(f => bg.includes(f));
+                    grid.style.opacity = '0';
+                    setTimeout(() => {
+                        if (!isActualMobile && isHoleBg) {
+                            grid.style.backgroundImage = 'url(elements/' + bg + ')';
+                            grid.style.backgroundSize = 'auto 100%';
+                            grid.style.backgroundPosition = 'center center';
+                            grid.style.backgroundRepeat = 'no-repeat';
+                            grid.style.opacity = '1';
+                            positionAndStartMatrix(grid);
+                        } else if (isActualMobile && isHoleBg) {
+                            stopMatrix(grid);
+                            grid.style.backgroundImage = 'url(elements/' + bg + '), url(elements/matrix-fone.gif)';
+                            grid.style.backgroundSize = 'auto 100%, auto 100%';
+                            grid.style.backgroundPosition = 'center center, center center';
+                            grid.style.backgroundRepeat = 'no-repeat, no-repeat';
+                            grid.style.opacity = '1';
+                        } else {
+                            stopMatrix(grid);
+                            grid.style.backgroundImage = 'url(elements/' + bg + ')';
+                            grid.style.backgroundSize = 'auto 100%';
+                            grid.style.backgroundPosition = 'center center';
+                            grid.style.backgroundRepeat = 'no-repeat';
+                            grid.style.opacity = '1';
+                        }
+                    }, 500);
+                }
+                if (video) {
+                    video.style.mixBlendMode = 'multiply';
+                    video.innerHTML = '<source src="elements/TDlogo-light.webm" type="video/webm"><source src="elements/TDlogo-light.mp4" type="video/mp4">';
+                    video.load();
+                }
+            }
+            updateModeLabel();
+            updateTdmoForMode();
+        }
+
+        function applySpaceMode() {
+            const grid = document.querySelector('.grid-bg');
+            const video = document.getElementById('logo-video');
+            stopMatrix(grid);
+            document.documentElement.classList.add('space-mode');
+            document.documentElement.style.setProperty('--text-color', '#c8d8ff');
+            document.documentElement.style.setProperty('--glitch-color', '#6b8fff');
+            document.documentElement.style.setProperty('--bg-color', '#000000');
+            document.documentElement.style.backgroundColor = '#000000';
+            const tcMeta = document.getElementById('theme-color-meta'); if (tcMeta) tcMeta.content = '#000000';
+            if (grid) {
+                grid.style.opacity = '0';
+                setTimeout(() => { grid.style.backgroundImage = 'none'; grid.style.opacity = '1'; }, 500);
+            }
+            if (video) {
+                video.style.mixBlendMode = 'screen';
+                video.innerHTML = '<source src="elements/TDlogo-dark.webm" type="video/webm"><source src="elements/TDlogo-dark.mp4" type="video/mp4">';
+                video.load();
+            }
+            updateModeLabel();
+            updateTdmoForMode();
+        }
+
+        // Apply saved preference on load
+        // --- LOGO RANDOMIZER ---
+        const logoVariants = ['DE', 'EN', 'ES', 'FR', 'NL', 'VI', 'PL']; // add codes as you create the PNGs
+        function randomizeLogos() {
+            const pick = logoVariants[Math.floor(Math.random() * logoVariants.length)];
+            const origBase = 'elements/TDo-sub.png';
+            const reimBase = 'elements/TDre-sub.png';
+            const origImg = document.querySelector('.originals-logo');
+            const reimImg = document.querySelector('.reimagined-logo');
+            if (origImg) {
+                origImg.onerror = () => { origImg.onerror = null; origImg.src = origBase; };
+                origImg.src = 'elements/TDo-sub-glitch-' + pick.toLowerCase() + '.png';
+            }
+            if (reimImg) {
+                reimImg.onerror = () => { reimImg.onerror = null; reimImg.src = reimBase; };
+                reimImg.src = 'elements/TDre-sub-glitch-' + pick.toLowerCase() + '.png';
+            }
+        }
+
+        // --- MOTION MEMORIES LOGO CYCLING ---
+        const tdmoLangs = ['EN', 'JA', 'DE', 'ES', 'FR', 'NL', 'VI', 'PL'];
+        let tdmoCycleIdx = 0;
+        let tdmoCycleTimer = null;
+
+        function getTdmoBase() {
+            if (document.documentElement.classList.contains('space-mode')) return 'TDmo-sub-gold';
+            const mode = localStorage.getItem('td_mode') || 'dark';
+            return mode === 'light' ? 'TDmo-sub-black' : 'TDmo-sub-white';
+        }
+
+        function getTdmoSrc(lang) {
+            const base = getTdmoBase();
+            return lang === 'EN' ? 'elements/' + base + '.png' : 'elements/' + base + '-' + lang + '.png';
+        }
+
+        function updateTdmoForMode() {
+            const logo = document.getElementById('tdmo-logo');
+            if (!logo) return;
+            const lang = tdmoLangs[tdmoCycleIdx];
+            const src = getTdmoSrc(lang);
+            logo.style.opacity = '0';
+            setTimeout(() => {
+                logo.src = src;
+                logo.onerror = function() { this.onerror = null; this.src = getTdmoSrc('EN'); };
+                logo.style.opacity = '';
+            }, 300);
+        }
+
+        function startTdmoCycle() {
+            const logo = document.getElementById('tdmo-logo');
+            if (!logo) return;
+            const pageLang = (document.documentElement.lang || 'en').toUpperCase();
+            const startIdx = tdmoLangs.indexOf(pageLang);
+            tdmoCycleIdx = startIdx >= 0 ? startIdx : 0;
+            logo.src = getTdmoSrc(tdmoLangs[tdmoCycleIdx]);
+            logo.onerror = function() { this.onerror = null; this.src = getTdmoSrc('EN'); };
+
+            let tdmoTransitioning = false;
+
+            function tdmoAdvance() {
+                if (tdmoTransitioning) return;
+                const nextIdx = (tdmoCycleIdx + 1) % tdmoLangs.length;
+                const nextSrc = getTdmoSrc(tdmoLangs[nextIdx]);
+                const preload = new Image();
+                preload.onload = () => {
+                    tdmoTransitioning = true;
+                    logo.style.opacity = '0';
+                    setTimeout(() => {
+                        tdmoCycleIdx = nextIdx;
+                        logo.src = nextSrc;
+                        logo.style.opacity = '';
+                        setTimeout(() => { tdmoTransitioning = false; }, 700);
+                    }, 500);
+                };
+                preload.onerror = () => { tdmoCycleIdx = nextIdx; };
+                preload.src = nextSrc;
+            }
+
+            clearInterval(tdmoCycleTimer);
+            tdmoCycleTimer = setInterval(tdmoAdvance, 5000);
+        }
+
+        function syncTdmoPulse() {
+            const el = document.getElementById('tdmo-kanji');
+            if (!el) return;
+            const ms = new Date().getMilliseconds();
+            const delay = (1000 - ms) % 1000;
+            setTimeout(() => {
+                el.style.animation = 'none';
+                void el.offsetHeight;
+                el.style.animation = 'tdmo-text-pulse 1s ease-in-out infinite';
+            }, delay);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedMode = localStorage.getItem('td_mode') || (localStorage.getItem('Light Out') === 'false' ? 'light' : 'dark');
+            if (savedMode === 'space') applySpaceMode();
+            else applyDarkMode(savedMode !== 'light');
+            initMatrix();
+            randomizeLogos();
+            startTdmoCycle();
+        });
+
+        /* --- MATRIX CANVAS --- */
+        const holeFiles = ['bg-fone-hole-1.png', 'bg-fone-hole-2.png', 'bg-pc-hole-1.png', 'bg-pc-hole-2.png'];
+
+        let _matrixAnimId = null;
+
+        function positionAndStartMatrix(grid) {
+            const canvas = document.getElementById('matrix-canvas');
+            if (!canvas) return;
+            const vw = window.innerWidth, vh = window.innerHeight;
+            const size = vh; // height-based: image is auto 100% so square at vh x vh
+            canvas.style.left = ((vw - size) / 2) + 'px';
+            canvas.style.top  = ((vh - size) / 2) + 'px';
+            canvas.style.display = 'block';
+            canvas.width  = size;
+            canvas.height = size;
+            if (grid) grid.style.backgroundColor = 'transparent';
+
+            if (_matrixAnimId) { cancelAnimationFrame(_matrixAnimId); _matrixAnimId = null; }
+            const ctx = canvas.getContext('2d');
+            const fontSize = Math.max(14, Math.floor(size / 20));
+            const cols = Math.floor(size / fontSize);
+            const drops = Array(cols).fill(0).map(() => Math.random() * cols);
+            const chars = ['0','1','双','極','の','螺','旋','核','領','計','器','盤','自','脳','案','活','性','知','能','仮','名','コ','ア','K','A','N','L','Y','O'];
+            let frameCount = 0;
+
+            let localId;
+            (function draw() {
+                localId = requestAnimationFrame(draw);
+                _matrixAnimId = localId;
+                if (++frameCount % 3 !== 0) return;
+                // Fill white so transparent PNG edges don't bleed the canvas
+                ctx.fillStyle = '#ffffff';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.font = `${fontSize}px 'WDXL Lubrifont JP N', monospace`;
+                for (let i = 0; i < cols; i++) {
+                    for (let j = 0; j < 4; j++) {
+                        ctx.fillStyle = Math.random() > 0.3 ? '#de7029' : '#b3a272';
+                        ctx.fillText(chars[Math.floor(Math.random() * chars.length)], i * fontSize, (drops[i] + j) * fontSize);
+                    }
+                    drops[i]++;
+                    if (drops[i] * fontSize > canvas.height && Math.random() > 0.92) drops[i] = 0;
+                }
+            })();
+        }
+
+        function stopMatrix(grid) {
+            if (_matrixAnimId) { cancelAnimationFrame(_matrixAnimId); _matrixAnimId = null; }
+            const canvas = document.getElementById('matrix-canvas');
+            if (canvas) canvas.style.display = 'none';
+            if (grid) grid.style.backgroundColor = '';
+        }
+
+        function initMatrix() {} // called at DOMContentLoaded — canvas starts only when a hole PNG is active
+
+        window.addEventListener('resize', () => {
+            if (_matrixAnimId) positionAndStartMatrix(document.querySelector('.grid-bg'));
+        });
+
+        function setLanguage(lang) {
+            langState.current = lang;
+            document.getElementById('main-html').setAttribute('lang', lang);
+            document.querySelectorAll('.lang-btn').forEach(el => el.classList.remove('active'));
+            document.getElementById('btn-' + lang).classList.add('active');
+            updateModeLabel();
+            startTdmoCycle(); // restart cycle with new language as primary
+        }
+        function toggleExtraLangs(show) {
+        const drawer = document.getElementById('extra-langs-drawer');
+        const expandBtn = document.getElementById('btn-expand');
+    
+        if (show) {
+        drawer.style.display = 'flex';
+        expandBtn.style.display = 'none';
+         } else {
+        drawer.style.display = 'none';
+        expandBtn.style.display = 'block';
+        }
+        }
+
+        const tooltip = document.getElementById('lore-tooltip');
+        const loreData = {
+            en: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SŌKYOKU</div>
+                <div class="jp-def">相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="en-def">Two opposing forces; the [&nbsp;duality&nbsp;] woven by the [&nbsp;bipolarity&nbsp;] of resonance and impact.</div>
+                
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 RASEN</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="en-def">A trajectory of creation and "decay" overlapping and continuously ascending in a [&nbsp;spiral&nbsp;].</div>
+            `,
+            de: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SSO-KJOH-KU</div>
+                <div class="jp-def">>相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="en-def">Zwei gegensätzliche Kräfte; die durch die [&nbsp;Bipolarität&nbsp;] von Resonanz und Einschlag gewobene [&nbsp;Dualität&nbsp;].</div>
+                
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 LA-SSEN</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="en-def">Eine schöpferische Flugbahn der „Decay“, die sich überlagert und als [&nbsp;Spirale&nbsp;] kontinuierlich aufsteigt.</div>
+            `,
+            es: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SŌKYOKU</div>
+                <div class="jp-def">相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="es-def">Dos fuerzas opuestas; la [&nbsp;dualidad&nbsp;] tejida por la [&nbsp;bipolaridad&nbsp;] entre la resonancia y el impacto.</div>
+
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 RASEN</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="es-def">Una trayectoria de creación y "decay", una [&nbsp;espiral&nbsp;] ascendente donde las capas se sobreponen.</div>
+            `,
+            fr: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SŌ-KYO-KU</div>
+                <div class="jp-def">相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="fr-def">Deux forces diamétrales&nbsp;; la [&nbsp;dualité&nbsp;] tissée par la [&nbsp;bipolarité&nbsp;] de la résonance et de&nbsp;l'impact.</div>
+
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 RA-SE-N</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="fr-def">Une trajectoire de genèse et de&nbsp;délitement, inextricablement&nbsp;enchevêtrée et en perpétuelle&nbsp;ascension dans une&nbsp;[&nbsp;spirale&nbsp;].</div>
+            `,
+            nl: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SŌKYOKU</div>
+                <div class="jp-def">相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="en-def">Twee opponerende krachten; de [&nbsp;dualiteit&nbsp;] verweven door de [&nbsp;bipolariteit&nbsp;] van resonantie en impact.</div>
+
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 RASEN</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="en-def">Een traject van schepping en "verval", onlosmakelijk verstrengeld en eindeloos escalerend in een [&nbsp;spiraal&nbsp;].</div>
+            `,
+            pl: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SŌKYOKU</div>
+                <div class="jp-def">相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="en-def">Dwie przeciwstawne siły;&nbsp;[&nbsp;dualność&nbsp;] spleciona przez [&nbsp;bipolarność&nbsp;] rezonansu i uderzenia.</div>
+
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 RASEN</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="en-def">Trajektoria genezy i rozpadu, nierozerwalnie splątana i nieustannie eskalująca w&nbsp;[&nbsp;spiralę&nbsp;].</div>
+            `,
+            vi: `
+                <div class="word-head"><span class="notranslate">双極</span></div><div class="reading">【 そうきょく 】 SŌKYOKU</div>
+                <div class="jp-def">相反する二つの力。残響と衝撃、その「双極」が織りなす「二元性」。</div>
+                <div class="en-def">Two opposing forces; the [&nbsp;duality&nbsp;] woven by the [&nbsp;bipolarity&nbsp;] of resonance and impact.</div>
+
+                <div class="word-head"><span class="notranslate">螺旋</span></div><div class="reading">【 らせん 】 RASEN</div>
+                <div class="jp-def">重なり合い、変異を繰り返しながら、高まり続ける「螺旋」の軌跡。</div>
+                <div class="en-def">A trajectory of creation and "decay" overlapping and continuously ascending in a [&nbsp;spiral&nbsp;].</div>
+            `
+        };
+
+        function showTooltip(e) { tooltip.innerHTML = loreData[langState.current] || loreData['en']; tooltip.style.display = 'block'; updateTooltipPos(e); }
+        function updateTooltipPos(e) { const x = e.pageX + 15; const y = e.pageY + 15; tooltip.style.left = x + 'px'; tooltip.style.top = y + 'px'; }
+        function hideTooltip() { tooltip.style.display = 'none'; }
+
+        document.querySelectorAll('.dictionary-trigger').forEach(el => {
+            el.addEventListener('mouseenter', showTooltip); el.addEventListener('mousemove', updateTooltipPos);
+            el.addEventListener('mouseleave', hideTooltip);
+            el.addEventListener('touchstart', (e) => { showTooltip(e.touches[0]); setTimeout(hideTooltip, 3000); });
+        });
+
+        const allGlitches = document.querySelectorAll('.nav-link, .lore-glitch');
+        function triggerRandomGlitch() {
+            const target = allGlitches[Math.floor(Math.random() * allGlitches.length)];
+            if (target) {
+                if (target.classList.contains('glitch-rare') && Math.random() > 0.5) { setTimeout(triggerRandomGlitch, 100); return; }
+                target.classList.add('glitch-active'); setTimeout(() => target.classList.remove('glitch-active'), 350);
+            }
+            setTimeout(triggerRandomGlitch, Math.random() * 3000 + 1500);
+        }
+        setTimeout(triggerRandomGlitch, 1500);
+
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+        const aboutOpenSounds = [
+            new Audio('sounds/aboutus-random1.mp3'),
+            new Audio('sounds/aboutus-random2.mp3')
+        ];
+        aboutOpenSounds.forEach(s => s.volume = 0.5);
+        const aboutCloseSound = new Audio('sounds/closefile-button.mp3');
+        aboutCloseSound.volume = 0.5;
+
+        let teamVisible = false;
+        function toggleTeam() {
+            teamVisible = !teamVisible;
+            const inner = document.getElementById('about-slide-inner');
+            if (inner) inner.classList.toggle('show-team', teamVisible);
+            document.querySelectorAll('.team-btn-trigger').forEach(btn => {
+                if (teamVisible) {
+                    btn.textContent = ' [ ← ] ';
+                    btn.setAttribute('data-glitch', '   ←   ');
+                } else {
+                    btn.textContent = btn.getAttribute('data-original-text');
+                    btn.setAttribute('data-glitch', btn.getAttribute('data-glitch-original'));
+                }
+            });
+        }
+
+        function resetTeam() {
+            if (!teamVisible) return;
+            teamVisible = false;
+            const inner = document.getElementById('about-slide-inner');
+            if (inner) inner.classList.remove('show-team');
+            document.querySelectorAll('.team-btn-trigger').forEach(btn => {
+                btn.textContent = btn.getAttribute('data-original-text');
+                btn.setAttribute('data-glitch', btn.getAttribute('data-glitch-original'));
+            });
+        }
+
+        function toggleAbout() {
+            const about = document.getElementById('about-sector');
+            const isOpening = (about.style.display === 'none' || about.style.display === '');
+            about.style.display = isOpening ? 'block' : 'none';
+            if (isOpening) {
+                track('about');
+                const s = aboutOpenSounds[Math.floor(Math.random() * aboutOpenSounds.length)];
+                s.currentTime = 0;
+                if (!isIOS) s.play();
+                about.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                aboutCloseSound.currentTime = 0;
+                if (!isIOS) aboutCloseSound.play();
+                resetTeam();
+            }
+        }
+
+        // --- CMD PANEL (PREFACE PORTAL) ---
+        let cmdPanelOpen = false;
+        const cmdPanel = document.getElementById('cmd-panel');
+        const cmdInput = document.getElementById('cmd-input');
+        const cmdSass = document.getElementById('cmd-sass');
+        const CMD_SECRET = 'KANA';
+        let sessionGroup1 = '', sessionGroup2 = '';
+
+        function getCmdDeviceLine() {
+            const ua = navigator.userAgent;
+            const today = new Date().toISOString().slice(0, 10).replace(/-/g, '.');
+            let name, ver;
+            if (/iPad|iPhone|iPod/.test(ua)) {
+                name = 'iBrick';
+                const m = ua.match(/OS (\d+[_\.]\d+)/);
+                ver = m ? m[1].replace('_', '.') : 'unknown';
+            } else if (/Android/.test(ua)) {
+                name = 'GoogleDroid';
+                const m = ua.match(/Android ([\d.]+)/);
+                ver = m ? m[1] : 'unknown';
+            } else if (/Macintosh|Mac OS/.test(ua)) {
+                name = 'Snapple';
+                ver = today;
+            } else if (/Windows/.test(ua)) {
+                name = 'Microslop';
+                ver = today;
+            } else {
+                name = navigator.platform || 'Unknown';
+                ver = today;
+            }
+            return 'Device: ' + name + ' [Version TD.' + ver + ']';
+        }
+
+        function generateSessionNo() {
+            const rD = () => Math.floor(Math.random() * 10);
+            const rL = () => String.fromCharCode(65 + Math.floor(Math.random() * 26));
+            sessionGroup1 = '' + rD() + rD() + rD();
+            sessionGroup2 = '' + rD() + rD() + rD();
+            return sessionGroup1 + rL() + rD() + rL() + sessionGroup2 + rL();
+        }
+
+        function generateQRString() {
+            const rD = () => Math.floor(Math.random() * 10);
+            const rDs = (n) => Array.from({length: n}, rD).join('');
+            const prefix = rDs(1 + Math.floor(Math.random() * 4));
+            const middle = rDs(2 + Math.floor(Math.random() * 6));
+            const suffix = rDs(1 + Math.floor(Math.random() * 4));
+            const swap = Math.random() > 0.5;
+            const a = swap ? sessionGroup2 : sessionGroup1;
+            const b = swap ? sessionGroup1 : sessionGroup2;
+            return prefix + a + middle + b + suffix;
+        }
+
+        const yesNoWords = ['yes','no','y','n','ja','nein','sí','si','oui','non','nee','có','không','vâng','tak','nie','はい','いいえ','da','evet','hayır'];
+        const sassMessages = [
+            'These two buttons are here for a reason.',
+            'Seriously?',
+            '...you see the Y and N buttons, right?',
+            'Terminal literacy: 0',
+            'This isn\'t a conversation.',
+            'Bold move for someone outside the network.',
+            'The buttons. Use the buttons.',
+            'Bro.',
+            'You typed that and felt good about it?',
+            'Not a chatbot. Try the buttons.',
+            'ACCESS DENIED (by common sense)',
+            'Still not how this works.',
+            'Do you also shake the vending machine?',
+        ];
+        let randomAttempts = 0;
+        const persistentSass = [
+            'yeah right keep trying',
+            'still going huh',
+            'really committed to failing',
+            'log will be flagged. (it won\'t. but still.)',
+            '...respect the grind I guess',
+        ];
+
+        function openCmdPanel() {
+            document.getElementById('cmd-device-line').textContent = getCmdDeviceLine();
+            document.getElementById('cmd-session-line').textContent = 'Session No: ' + generateSessionNo();
+            cmdInput.value = '';
+            cmdSass.textContent = '';
+            document.getElementById('cmd-qr').innerHTML = '';
+            cmdPanel.classList.add('active');
+            cmdPanelOpen = true;
+            document.addEventListener('keydown', cmdKeyHandler);
+            setTimeout(() => cmdInput.focus(), 100);
+        }
+
+        function closeCmdPanel() {
+            cmdPanel.classList.remove('active');
+            cmdPanelOpen = false;
+            cmdInput.value = '';
+            cmdSass.textContent = '';
+            randomAttempts = 0;
+            const qrEl = document.getElementById('cmd-qr');
+            qrEl.classList.remove('active');
+            qrEl.innerHTML = '';
+            document.removeEventListener('keydown', cmdKeyHandler);
+        }
+
+        cmdInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                const val = cmdInput.value.trim().toLowerCase();
+                if (yesNoWords.includes(val)) {
+                    cmdSass.textContent = sassMessages[Math.floor(Math.random() * sassMessages.length)];
+                    cmdInput.value = '';
+                } else if (val.toUpperCase() === CMD_SECRET) {
+                    cmdSass.textContent = '';
+                    randomAttempts = 0;
+                    showQR();
+                    cmdInput.value = '';
+                } else if (val) {
+                    randomAttempts++;
+                    if (randomAttempts >= 10) {
+                        cmdSass.textContent = persistentSass[Math.floor(Math.random() * persistentSass.length)];
+                    } else if (randomAttempts >= 5) {
+                        cmdSass.textContent = 'yeah right keep trying';
+                    } else {
+                        cmdSass.textContent = '';
+                    }
+                    cmdInput.value = '';
+                }
+                return;
+            }
+            if (e.key === 'Escape') { e.preventDefault(); closeCmdPanel(); }
+        });
+
+        function cmdKeyHandler(e) {
+            if (!cmdPanelOpen) return;
+            if (e.target === cmdInput) return;
+            if (e.key === 'Enter') { e.preventDefault(); executePreface(); }
+            if (e.key === 'Escape') { e.preventDefault(); closeCmdPanel(); }
+        }
+
+        function showQR() {
+            const qrContainer = document.getElementById('cmd-qr');
+            qrContainer.innerHTML = '';
+            if (typeof qrcode === 'undefined') return;
+            const qrData = generateQRString();
+            const qr = qrcode(0, 'M');
+            qr.addData(qrData);
+            qr.make();
+            const size = 6;
+            const moduleCount = qr.getModuleCount();
+            const canvas = document.createElement('canvas');
+            canvas.width = moduleCount * size;
+            canvas.height = moduleCount * size;
+            canvas.style.width = (moduleCount * size) + 'px';
+            canvas.style.height = (moduleCount * size) + 'px';
+            canvas.draggable = false;
+            canvas.oncontextmenu = function() { return false; };
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#0c0c0c';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#de7029';
+            for (let r = 0; r < moduleCount; r++) {
+                for (let c = 0; c < moduleCount; c++) {
+                    if (qr.isDark(r, c)) ctx.fillRect(c * size, r * size, size, size);
+                }
+            }
+            const fakeId = Array.from({length: 6}, () => Math.floor(Math.random() * 10)).join('');
+            const fakeIdEl = document.createElement('div');
+            fakeIdEl.id = 'cmd-qr-fakeid';
+            fakeIdEl.textContent = 'ID: ' + fakeId;
+            qrContainer.appendChild(fakeIdEl);
+            qrContainer.appendChild(canvas);
+            const hint = document.createElement('div');
+            hint.id = 'cmd-qr-hint';
+            hint.textContent = 'Screenshot must include device\'s time and ID';
+            qrContainer.appendChild(hint);
+            qrContainer.classList.add('active');
+            qrContainer.onclick = function() { qrContainer.classList.remove('active'); qrContainer.innerHTML = ''; };
+        }
+
+        function executePreface() {
+            closeCmdPanel();
+            const body = document.body;
+            body.classList.add('site-fading');
+
+            // Phase 1: main content fades (0.6s)
+            setTimeout(() => {
+                // Phase 2: orange panel fades out
+                body.classList.add('about-fade');
+            }, 600);
+
+            setTimeout(() => {
+                // Phase 3: push URL, swap to preface view
+                history.pushState({ view: 'preface' }, '', '/preface');
+                document.getElementById('about-sector').style.display = 'none';
+                body.classList.remove('site-fading', 'about-fade');
+                showPrefaceView();
+            }, 1400);
+        }
+
+        function showPrefaceView() {
+            // Hide main terminal
+            const terminal = document.querySelector('.main-terminal');
+            if (terminal) terminal.style.display = 'none';
+
+            // Create or show preface view
+            let preface = document.getElementById('preface-view');
+            if (!preface) {
+                preface = document.createElement('div');
+                preface.id = 'preface-view';
+                preface.innerHTML = '<div class="preface-content">' +
+                    '<div class="log-header" style="color: rgba(255,255,255,0.4);">TD:// LOGS.PERSONA_ARCHIVE --extended</div>' +
+                    '<p class="preface-text">[ AWAITING CONTENT ]</p>' +
+                    '<a href="javascript:void(0)" onclick="exitPreface()" class="nav-link stationary-glitch" data-glitch="[ 帰還 ]" style="margin-top: 40px;">[ return ]</a>' +
+                    '</div>';
+                document.body.appendChild(preface);
+            }
+            preface.style.display = 'flex';
+            // Staggered fade-in
+            requestAnimationFrame(() => preface.classList.add('active'));
+        }
+
+        function exitPreface() {
+            const preface = document.getElementById('preface-view');
+            if (preface) {
+                preface.classList.remove('active');
+                setTimeout(() => {
+                    preface.style.display = 'none';
+                    const terminal = document.querySelector('.main-terminal');
+                    if (terminal) { terminal.style.display = ''; terminal.style.opacity = ''; }
+                    history.pushState({ view: 'main' }, '', '/');
+                }, 600);
+            }
+        }
+
+        // Handle browser back/forward
+        window.addEventListener('popstate', (e) => {
+            if (e.state && e.state.view === 'preface') { showPrefaceView(); }
+            else { exitPreface(); }
+        });
+
+        function checkPassword() {
+            const password = prompt('[ ENTER TRANSMISSION CODE ]');
+            if (password && password.toUpperCase() === 'DUAL') {
+                document.querySelectorAll('.online-status').forEach(el => {
+                    el.textContent = langState.current === 'de' ? 'RESONIEREN' : 'RESONATING';
+                    el.style.color = 'var(--glitch-color)'; el.classList.add('glitch-active');
+                    setTimeout(() => el.classList.remove('glitch-active'), 1000);
+                });
+            } else if (password) { alert('[ TRANSMISSION CODE INVALID ]'); }
+        }
+
+        // --- BACK TO TOP LISTENER ---
+        window.addEventListener('scroll', () => {
+            const btt = document.getElementById('back-to-top');
+            if (window.scrollY > 300) btt.classList.add('visible');
+            else btt.classList.remove('visible');
+        });
+
+        // --- PULL TO REFRESH LISTENER ---
+        let touchStartY = 0;
+        const pTr = document.getElementById('pull-refresh');
+        
+        window.addEventListener('touchstart', e => { 
+            if(window.scrollY === 0) touchStartY = e.touches[0].clientY; 
+        }, {passive: true});
+        
+        window.addEventListener('touchmove', e => {
+            if(window.scrollY === 0 && touchStartY > 0) {
+                let pullDistance = e.touches[0].clientY - touchStartY;
+                if(pullDistance > 30) {
+                    pTr.style.transform = `translateY(${Math.min(pullDistance, 120)}px)`;
+                    if(pullDistance > 80) pTr.classList.add('ready');
+                    else pTr.classList.remove('ready');
+                }
+            }
+        }, {passive: true});
+        
+        window.addEventListener('touchend', e => {
+            if(pTr.classList.contains('ready')) { location.reload(); }
+            pTr.style.transform = 'translateY(0)';
+            pTr.classList.remove('ready');
+            touchStartY = 0;
+        });
+
+        // --- RE/IMAGINED TAG TOOLTIP ---
+        document.querySelectorAll('.reimagined-tag').forEach(el => {
+            const tip = () => {
+                const full = el.dataset.reimagined;
+                const dotIdx = full.indexOf('. ');
+                const label = dotIdx > -1 ? full.substring(0, dotIdx) : full;
+                const rest = dotIdx > -1 ? full.substring(dotIdx + 2) : '';
+                return `<div class="word-head" style="font-size:0.85rem; font-family:'WDXL Lubrifont JP N', sans-serif;">${label}</div>${rest ? '<div class="en-def" style="margin-top:4px;">' + rest + '</div>' : ''}`;
+            };
+            el.addEventListener('mouseenter', (e) => { tooltip.innerHTML = tip(); tooltip.style.display = 'block'; updateTooltipPos(e); });
+            el.addEventListener('mousemove', updateTooltipPos);
+            el.addEventListener('mouseleave', hideTooltip);
+            el.addEventListener('touchstart', (e) => {
+                tooltip.innerHTML = tip();
+                const t = e.touches[0];
+                tooltip.style.left = (t.pageX + 15) + 'px';
+                tooltip.style.top = (t.pageY + 15) + 'px';
+                tooltip.style.display = 'block';
+                setTimeout(hideTooltip, 3000);
+            }, { passive: true });
+        });
+        // --- ON AIR STATUS ---
+        // Replace the URL below with your Gist raw URL after setup
+        const ONAIR_GIST_URL = 'https://gist.githubusercontent.com/toowyred/d5eed9405232e7d36e77a2aed4bbdf51/raw/status.json';
+
+        function checkOnAir() {
+            if (!ONAIR_GIST_URL || ONAIR_GIST_URL === 'YOUR_GIST_RAW_URL') return;
+            fetch(ONAIR_GIST_URL + '?t=' + Date.now()) // cache-bust
+                .then(r => r.json())
+                .then(data => {
+                    const el = document.getElementById('onair-indicator');
+                    const wasHidden = el.style.display === 'none' || el.style.display === '';
+                    el.style.display = data.onair ? 'flex' : 'none';
+                    if (data.onair && wasHidden) {
+                        // Start cycling when first shown
+                        clearInterval(window._onairInterval);
+                        window._onairInterval = setInterval(cycleOnAir, 3000);
+                    } else if (!data.onair) {
+                        clearInterval(window._onairInterval);
+                    }
+                    // Update STATUS: ONLINE/OFFLINE based on data.online field
+                    // Falls back to true if field is absent (backwards compat)
+                    const isOnline = data.online !== false;
+                    document.querySelectorAll('.online-status').forEach(span => {
+                        span.textContent = isOnline
+                            ? (span.dataset.wordOnline  || span.textContent)
+                            : (span.dataset.wordOffline || 'OFFLINE');
+                        span.style.opacity = isOnline ? '' : '0.35';
+                    });
+                })
+                .catch(() => {}); // silently fail — never breaks the page
+        }
+
+        checkOnAir();
+        setInterval(checkOnAir, 60000); // poll every 60s
+
+        // --- LINK CLICK TRACKING ---
+        document.querySelectorAll('.nav-link[href]').forEach(link => {
+            const h = link.href;
+            let ev = null;
+            if (h.includes('spotify.com/artist'))          ev = 'spotify';
+            else if (h.includes('spotify.com/track'))      ev = 'spotify-echoes';
+            else if (h.includes('music.apple.com') && h.includes('/artist')) ev = 'apple-music';
+            else if (h.includes('music.apple.com') && h.includes('/song'))   ev = 'apple-music-echoes';
+            else if (h.includes('soundcloud.com/twysted1'))                  ev = 'og-soundcloud';
+            else if (h.includes('soundcloud.com/twysted-re/goldenhour'))     ev = 're-soundcloud-goldenhour';
+            else if (h.includes('soundcloud.com/twysted-re'))                ev = 're-soundcloud';
+            else if (h.includes('bandcamp.com'))   ev = 'bandcamp';
+            else if (h.includes('instagram.com'))  ev = 'instagram';
+            else if (h.includes('tiktok.com'))     ev = 'tiktok';
+            if (ev) link.addEventListener('click', () => track(ev));
+        });
+
+        // --- ADMIN PANEL ---
+        const ADMIN_LABELS = {
+            'visits':                  'PAGE VISITS',
+            'about':                   'ABOUT / OPENED',
+            'spotify':                 'SPOTIFY',
+            'apple-music':             'APPLE MUSIC',
+            'og-soundcloud':           'OG / SOUNDCLOUD',
+            're-soundcloud':           'RE / SOUNDCLOUD',
+            'bandcamp':                'BANDCAMP',
+            'instagram':               'INSTAGRAM',
+            'tiktok':                  'TIKTOK',
+            'spotify-echoes':          'ECHOES / SPOTIFY',
+            'apple-music-echoes':      'ECHOES / APPLE MUSIC',
+            're-soundcloud-goldenhour':'GOLDEN HOUR / SC',
+        };
+        function openAdminPanel() {
+            const pw = prompt('[ ADMIN ACCESS ]');
+            if (!pw || pw !== 'owyler') { if (pw) alert('[ ACCESS DENIED ]'); return; }
+            const panel = document.getElementById('admin-panel');
+            const statsDiv = document.getElementById('admin-stats');
+            statsDiv.innerHTML = '<div style="text-align:center;opacity:0.4;font-size:0.65rem;">loading...</div>';
+            panel.style.display = 'flex';
+            fetch(`${WORKER_URL}/stats`)
+                .then(r => r.json())
+                .then(data => {
+                    const rows = Object.entries(data).sort((a, b) => b[1] - a[1]);
+                    statsDiv.innerHTML = rows.length
+                        ? rows.map(([k, v]) => `<div class="admin-row"><span>${ADMIN_LABELS[k] || k}</span><span class="admin-count">${v.toLocaleString()}</span></div>`).join('')
+                        : '<div style="text-align:center;opacity:0.4;font-size:0.65rem;">no data yet</div>';
+                })
+                .catch(() => { statsDiv.innerHTML = '<div style="opacity:0.4;font-size:0.65rem;">failed to load</div>'; });
+        }
+        function closeAdminPanel() { document.getElementById('admin-panel').style.display = 'none'; }
+
+        // ON AIR cycling labels
+        const onairLabels = ['録音中','Opname','Grabando','Enregistrement','ON AIR','Aufnahme','录音中','ON AIR','Đang thu','REC','En cours','ON AIR'];
+        let onairIdx = 0;
+        function cycleOnAir() {
+            const label = document.getElementById('onair-label');
+            if (!label) return;
+            onairIdx = (onairIdx + 1) % onairLabels.length;
+            label.style.opacity = '0';
+            setTimeout(() => {
+                label.textContent = onairLabels[onairIdx];
+                label.style.transition = 'opacity 0.4s';
+                label.style.opacity = '1';
+            }, 300);
+        }
+
+        // ON AIR tooltip
+        const onairEl = document.getElementById('onair-indicator');
+        const onairTip = () => `<div class="en-def" style="margin:0; font-style:normal; opacity:1; font-size:0.72rem;">This means someone is at TD Studio<br>cooking some sick beats 🎛️</div>`;
+        onairEl.addEventListener('mouseenter', e => { tooltip.innerHTML = onairTip(); tooltip.style.display = 'block'; updateTooltipPos(e); });
+        onairEl.addEventListener('mousemove', updateTooltipPos);
+        onairEl.addEventListener('mouseleave', hideTooltip);
+        onairEl.addEventListener('touchstart', e => {
+            tooltip.innerHTML = onairTip();
+            const t = e.touches[0];
+            tooltip.style.left = (t.pageX + 15) + 'px';
+            tooltip.style.top  = (t.pageY + 15) + 'px';
+            tooltip.style.display = 'block';
+            setTimeout(hideTooltip, 3000);
+        }, { passive: true });
+
+    // Logo video — 3s pause between loops
+    const logoVideo = document.getElementById('logo-video');
+    if (logoVideo) {
+        logoVideo.addEventListener('ended', () => {
+            setTimeout(() => { logoVideo.currentTime = 0; logoVideo.play(); }, 3000);
+        });
+    }
+
+    </script>
+</body>
+</html>
