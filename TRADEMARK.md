@@ -13,7 +13,6 @@ The following brand names, logos, and visual marks are trademarks of
 ### Visual marks
 
 - The Twisted Duality logo
-- The "tower" mark (`tower.svg`)
 - The spiral motif used in logo composition
 - Stylized typography of the wordmarks above
 - Visual identity for the **RE/IMAGINED** collection
