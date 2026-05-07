@@ -43,7 +43,6 @@ See [TRADEMARK.md](TRADEMARK.md) for the full breakdown.
 .
 ├── index.html              # Main landing page
 ├── CNAME                   # GitHub Pages custom domain
-├── tower.svg               # TD tower mark
 ├── elements/               # Brand assets — logos, backgrounds, sub-brand graphics
 ├── fonts/                  # Custom typography
 ├── sounds/                 # UI SFX (button clicks, ambience)
